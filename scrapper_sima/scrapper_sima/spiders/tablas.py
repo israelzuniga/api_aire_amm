@@ -32,18 +32,18 @@ lista_estaciones_web = [
 ]
 # Extracto
 lista_url_estaciones = ['http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=CENTRO',
-                        'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=SURESTE',
-                        'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=NORESTE',
-                        'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=NOROESTE',
-                        'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=SUROESTE',
-                        'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=GARCIA',
-                        'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=NORTE',
-                        'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=NORESTE2',
-                        'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=SURESTE2',
-                        'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=[SAN Pedro]',
-                        'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=SURESTE3',
-                        'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=NORTE2',
-                        'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=SUR',
+                        # 'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=SURESTE',
+                        # 'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=NORESTE',
+                        # 'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=NOROESTE',
+                        # 'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=SUROESTE',
+                        # 'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=GARCIA',
+                        # 'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=NORTE',
+                        # 'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=NORESTE2',
+                        # 'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=SURESTE2',
+                        # 'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=[SAN Pedro]',
+                        # 'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=SURESTE3',
+                        # 'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=NORTE2',
+                        # 'http://aire.nl.gob.mx:81/SIMA2017reportes/ReporteDiariosima.php?estacion1=SUR',
                         ]
 
 
@@ -52,8 +52,18 @@ class TablasSpider(scrapy.Spider):
     allowed_domains = ['aire.nl.gob.mx']
     start_urls = lista_url_estaciones
 
-    def parse_item(self, response):
-        for item in response.selector.xpath('div.body'):
-            yield {
-                # 'estacion': #/html/body/div[1]/section/div[2]/h3[1]
-            }
+    # def parse_item(self, response):
+    #     for item in response.xpath('/html/body/'):
+    #         # yield {
+    #         #     # 'estacion': #/html/body/div[1]/section/div[2]/h3[1]
+    #         # }
+    #         print(response.xpath('//title/text()').get())
+    def parse(self, response):
+        self.logger.info('A response from %s just arrived!', response.url)
+        # IMECA - tablaIMK
+        tabla = response.xpath("descendant-or-self::*[@id = 'tablaIMK']")
+        # Concentracion - tablaConcentracion
+        # meteo - tablaMeteo
+
+        for value in response.xpath('//tr').getall():
+            yield {"value": value}
